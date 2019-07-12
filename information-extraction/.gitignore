@@ -1,0 +1,17 @@
+__pycache__/
+env/
+.env
+# virtualenv
+.venv
+venv/
+ENV/
+# Spyder project settings
+.spyderproject
+.spyproject
+# Rope project settings
+.ropeproject
+# mkdocs documentation
+/site
+datagrand
+datagrand_save
+datagrand.zip
