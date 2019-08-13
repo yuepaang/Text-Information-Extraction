@@ -1,5 +1,21 @@
-class DataLoader(object):
+# -*- coding: utf-8 -*-
+""".
 
+@file: data.py
+@guid: f9264f3929bf4971875484a95129a8ac
+
+@author: Yue Peng
+@email: yuepaang@gmail.com
+@date: 2019-08-13 13:56:47
+@modified:
+
+@brief:
+"""
+__author__ = "Yue Peng"
+from pathlib import Path
+
+
+class DataLoader(object):
     def __init__(self, txt_file):
         self.special_markers = ["/a", "/b", "/c", "/o"]
         self.txt_file = txt_file
@@ -31,12 +47,12 @@ class DataLoader(object):
         cut = 0
 
         while cursor < len(characters):
-            marker_index = [characters[cursor].find(
-                x) for x in self.special_markers]
+            marker_index = [characters[cursor].find(x) for x in self.special_markers]
             has_marker = [m for m in marker_index if m >= 0]
             if len(has_marker) > 0:
                 first_marker = [
-                    i for i, j in enumerate(marker_index) if j == min(has_marker)]
+                    i for i, j in enumerate(marker_index) if j == min(has_marker)
+                ]
                 marker = self.special_markers[first_marker[0]]
                 try:
                     head, tail = characters[cursor].split(marker)
@@ -45,21 +61,22 @@ class DataLoader(object):
                     tail = marker.join(characters[cursor].split(marker)[1:])
                 # Before the cursor
                 for i in range(cut, cursor):
-                    data.append(characters[i])
+                    data.append(int(characters[i]))
                     labels.append(marker)
-                data.append(head)
+                data.append(int(head))
                 labels.append(marker)
                 if tail != "":
-                    characters.insert(cursor+1, tail)
-                # FIXME
+                    characters.insert(cursor + 1, tail)
                 cut = cursor + 1
                 cursor += 1
             else:
                 cursor += 1
-        if len(characters[cut:cursor-1]) != 0:
-            data.append(characters[cut:cursor-1])
+        if len(characters[cut : cursor - 1]) != 0:
+            data.append(int(characters[cut : cursor - 1]))
         labels += ["/o"] * len(characters[cut:cursor])
-        assert len(data) == len(labels), "data:{} and labels: {}Must be the same length".format(
+        assert len(data) == len(
+            labels
+        ), "data:{} and labels: {}Must be the same length".format(
             len(data), len(labels)
         )
 
@@ -77,7 +94,7 @@ class DataLoader(object):
 
 
 def main():
-    dl = DataLoader("./datagrand/train.txt")
+    dl = DataLoader(Path("../data/train.txt"))
     # print(len(dl.lines))
     # print(dl.information_count())
     # print(dl.lines[27])
@@ -87,14 +104,9 @@ def main():
     x, y = dl.multi_operation()
     print(x[:10])
     print(y[:10])
+    print(f"how many chars {len(set(x))}")
     print(len(x), len(y))
-    keywords = []
-    for w, l in zip(x, y):
-        if l not in dl.special_markers:
-            continue
-
-    w2l = {a: b for a, b in zip(x, y)}
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
